@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f4efe6;
+  --ink: #1c1917;
+  --chalk: #2f4a3c;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #e7efe8 0%, transparent 55%),
+    radial-gradient(900px 400px at 100% 0%, #efe4d4 0%, transparent 50%),
+    var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
