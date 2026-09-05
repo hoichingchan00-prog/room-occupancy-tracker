@@ -25,7 +25,7 @@ const badgeClass: Record<ReturnType<typeof occupancyTone>, string> = {
   full: "bg-rose-50 text-rose-800 ring-rose-200",
 };
 
-export function RoomCard({ room, pending, onAdjust }: RoomCardProps) {
+export function RoomCard({ room, pending, onAdjust, isStaff, onUnlock }: RoomCardProps) {
   const percent = occupancyPercent(room.current_occupancy, room.max_capacity);
   const tone = occupancyTone(room.current_occupancy);
   const atMin = room.current_occupancy <= 0;
@@ -81,11 +81,17 @@ export function RoomCard({ room, pending, onAdjust }: RoomCardProps) {
           />
         </div>
       </div>
-
+      <button
+  type="button"
+  onClick={onUnlock}
+  className="w-full mb-2 py-2 text-xs font-semibold rounded-xl border border-stone-200 hover:bg-stone-100 transition-colors"
+>
+  {isStaff ? "🔓 員工模式（已解鎖）" : "🔒 員工解鎖"}
+</button>
       <div className="mt-6 grid grid-cols-2 gap-2">
         <button
           type="button"
-          disabled={pending || atMin}
+          disabled={!isStaff || pending || atMin}
           onClick={() => onAdjust(-1)}
           className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-lg font-semibold text-stone-800 transition hover:bg-stone-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >
@@ -93,7 +99,7 @@ export function RoomCard({ room, pending, onAdjust }: RoomCardProps) {
         </button>
         <button
           type="button"
-          disabled={pending}
+          disabled={!isStaff || pending}
           onClick={() => onAdjust(1)}
           className="rounded-xl bg-[var(--ink)] px-4 py-3 text-lg font-semibold text-[var(--paper)] transition hover:bg-stone-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
         >

@@ -18,7 +18,24 @@ function mergeRoom(rooms: Room[], next: Room) {
   return rooms.map((room) => (room.id === next.id ? next : room));
 }
 
-export function OccupancyDashboard() {
+export function OccupancyDashboard() {// 1. 員工身分驗證 State
+  const [isStaff, setIsStaff] = useState(false);
+  const STAFF_PASSWORD = "1234";
+
+  // 2. 解鎖函式
+  const handleUnlock = () => {
+    if (isStaff) {
+      setIsStaff(false);
+      return;
+    }
+    const input = prompt("請輸入員工密碼：");
+    if (input === STAFF_PASSWORD) {
+      setIsStaff(true);
+      alert("驗證成功！已解鎖控制按鈕。");
+    } else if (input !== null) {
+      alert("密碼錯誤！");
+    }
+  };
   const configured = isSupabaseConfigured();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(configured);
@@ -175,6 +192,8 @@ export function OccupancyDashboard() {
               room={room}
               pending={pendingIds.has(room.id)}
               onAdjust={(delta) => void onAdjust(room.id, delta)}
+              isStaff={isStaff}
+              onUnlock={handleUnlock}
             />
           ))}
         </div>
