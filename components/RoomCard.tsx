@@ -11,6 +11,8 @@ type RoomCardProps = {
   room: Room;
   pending: boolean;
   onAdjust: (delta: number) => void;
+  isStaff?: boolean;
+  onUnlock?: () => void;
 };
 
 const barClass: Record<ReturnType<typeof occupancyTone>, string> = {
