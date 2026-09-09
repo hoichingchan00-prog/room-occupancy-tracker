@@ -18,7 +18,8 @@ function mergeRoom(rooms: Room[], next: Room) {
   return rooms.map((room) => (room.id === next.id ? next : room));
 }
 
-export function OccupancyDashboard() {// 1. 員工身分驗證 State
+export function OccupancyDashboard() {
+  // 1. 員工身分驗證 State
   const [isStaff, setIsStaff] = useState(false);
   const STAFF_PASSWORD = "1234";
 
@@ -36,6 +37,27 @@ export function OccupancyDashboard() {// 1. 員工身分驗證 State
       alert("密碼錯誤！");
     }
   };
+
+  // 3. 📢 公告欄與不開放狀態 State
+  const [notice, setNotice] = useState<string>("歡迎來到 Math Centre！請隨時留意各校舍開放時間。");
+  const [isEditingNotice, setIsEditingNotice] = useState<boolean>(false);
+  const [tempNotice, setTempNotice] = useState<string>(notice);
+  const [closedRooms, setClosedRooms] = useState<Record<string, boolean>>({});
+
+  // 切換房間開放/不開放
+  const toggleRoomClosed = (roomId: string) => {
+    setClosedRooms((prev) => ({
+      ...prev,
+      [roomId]: !prev[roomId],
+    }));
+  };
+
+  // 儲存公告欄內容
+  const handleSaveNotice = () => {
+    setNotice(tempNotice);
+    setIsEditingNotice(false);
+  };
+
   const configured = isSupabaseConfigured();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(configured);
@@ -160,6 +182,56 @@ export function OccupancyDashboard() {// 1. 員工身分驗證 State
 
   return (
     <div>
+      {/* 📢 告示欄公告區塊 */}
+      <div className="mb-6 p-4 rounded-2xl bg-amber-50/80 border border-amber-200/60 text-amber-900 shadow-sm">
+        <div className="flex items-center justify-between mb-1">
+          <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800">
+            📢 中心公告欄
+          </span>
+          {isStaff && !isEditingNotice && (
+            <button
+              type="button"
+              onClick={() => { setTempNotice(notice); setIsEditingNotice(true); }}
+              className="text-xs text-amber-700 underline hover:text-amber-900 font-medium"
+            >
+              ✏️ 編輯公告
+            </button>
+          )}
+        </div>
+
+        {isEditingNotice ? (
+          <div className="mt-2 space-y-2">
+            <textarea
+              value={tempNotice}
+              onChange={(e) => setTempNotice(e.target.value)}
+              className="w-full p-2.5 text-sm rounded-xl border border-amber-300 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+              rows={2}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setIsEditingNotice(false)}
+                className="px-3 py-1 text-xs rounded-lg border border-stone-300 bg-white"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveNotice}
+                className="px-3 py-1 text-xs rounded-lg bg-amber-800 text-white font-medium"
+              >
+                儲存公告
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p className="text-sm font-medium text-amber-900/90 whitespace-pre-wrap leading-relaxed">
+            {notice}
+          </p>
+        )}
+      </div>
+
+      {/* 數據統計與連線狀態標頭 */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-stone-600">
           <span className="font-semibold text-stone-900">{occupied}</span> students
@@ -194,6 +266,8 @@ export function OccupancyDashboard() {// 1. 員工身分驗證 State
               onAdjust={(delta) => void onAdjust(room.id, delta)}
               isStaff={isStaff}
               onUnlock={handleUnlock}
+              isClosed={closedRooms[room.id] || false}
+              onToggleClose={() => toggleRoomClosed(room.id)}
             />
           ))}
         </div>
