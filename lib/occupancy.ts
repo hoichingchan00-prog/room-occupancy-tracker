@@ -13,7 +13,7 @@ export function occupancyTone(currentCount: number): CapacityTone {
 }
 
 export function toneLabel(tone: CapacityTone) {
-  if (tone === "full") return "人間地獄 🔥 (冷氣都唔夠凍)";
-  if (tone === "busy") return "熱鬧過年宵 🧧 (剛剛好)";
-  return "小貓三四隻 🐱 (靜到聽到心跳)";
+  if (tone === "full") return "人間地獄 🔥 ";
+  if (tone === "busy") return "熱鬧過年宵 🧧 ";
+  return "小貓三四隻 🐱 ";
 }
