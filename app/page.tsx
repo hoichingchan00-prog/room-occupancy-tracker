@@ -6,7 +6,7 @@ export default function HomePage() {
       <header className="mb-8 flex flex-col gap-4 border-b border-stone-300/70 pb-6 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--chalk)]">
-            學博教育
+            GJ
           </p>
           <h1 className="mt-2 font-[family-name:var(--font-display)] text-4xl text-stone-900 sm:text-5xl">
             Room occupancy
